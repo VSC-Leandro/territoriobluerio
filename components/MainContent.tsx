@@ -2,12 +2,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
 import ReactDOMServer from 'react-dom/server';
-import { REPORT_ICONS } from '../constants';
-import { ReportType, MapPoint } from '../types';
+import { MENU_STRUCTURE } from '../constants';
+import { MapPointType, SubMenuKey, MapPoint } from '../types';
 import { MAP_DATA } from '../data';
 import { SearchIcon, FloodsIcon, DonationIcon, VolunteersIcon, CheckCircleIcon } from './icons';
 
-const MapComponent: React.FC<{ activeReportType: ReportType | null }> = ({ activeReportType }) => {
+const MapComponent: React.FC<{ activeSubMenu: MapPointType | null }> = ({ activeSubMenu }) => {
     const mapContainerRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<L.Map | null>(null);
     const markerLayerRef = useRef<L.LayerGroup | null>(null);
@@ -35,31 +35,30 @@ const MapComponent: React.FC<{ activeReportType: ReportType | null }> = ({ activ
 
         markerLayerRef.current.clearLayers();
 
-        const pointsToRender: { point: MapPoint; type: ReportType }[] = [];
+        const pointsToRender: { point: MapPoint; type: MapPointType }[] = [];
+        const mapSubmenus = MENU_STRUCTURE.MAP.submenus;
 
-        if (activeReportType) {
-            // A specific category is selected, show only its points.
-            const points = MAP_DATA[activeReportType] ?? [];
-            points.forEach(p => pointsToRender.push({ point: p, type: activeReportType }));
+        if (activeSubMenu && mapSubmenus[activeSubMenu]) {
+            const points = MAP_DATA[activeSubMenu] ?? [];
+            points.forEach(p => pointsToRender.push({ point: p, type: activeSubMenu }));
         } else {
-            // No category is selected, show all points from all categories.
-            for (const type in MAP_DATA) {
-                const reportType = type as ReportType;
-                const points = MAP_DATA[reportType] ?? [];
-                points.forEach(p => pointsToRender.push({ point: p, type: reportType }));
+            for (const type in mapSubmenus) {
+                const mapPointType = type as MapPointType;
+                const points = MAP_DATA[mapPointType] ?? [];
+                points.forEach(p => pointsToRender.push({ point: p, type: mapPointType }));
             }
         }
 
         if (pointsToRender.length === 0) {
-            mapInstanceRef.current.flyTo([-22.92, -43.28], 12); // Reset view if no points
+            mapInstanceRef.current.flyTo([-22.92, -43.28], 12);
             return;
         }
 
         pointsToRender.forEach(({ point, type }) => {
-            const { Icon } = REPORT_ICONS[type];
+            const Icon = mapSubmenus[type]?.Icon;
+            if (!Icon) return;
             
             const iconHTML = ReactDOMServer.renderToString(<Icon className="w-5 h-5 text-brand-dark" />);
-
             const customIcon = L.divIcon({
                 html: iconHTML,
                 className: 'custom-div-icon',
@@ -80,18 +79,17 @@ const MapComponent: React.FC<{ activeReportType: ReportType | null }> = ({ activ
             markerLayerRef.current?.addLayer(marker);
         });
 
-        // Adjust map view to fit all rendered markers
         const bounds = L.latLngBounds(pointsToRender.map(p => p.point.coords));
         mapInstanceRef.current.flyToBounds(bounds, { padding: [50, 50], maxZoom: 14 });
 
-    }, [activeReportType]);
+    }, [activeSubMenu]);
 
     return <div ref={mapContainerRef} className="w-full h-full" />;
 };
 
 const RegistrationModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const [step, setStep] = useState(1);
-    const [selectedType, setSelectedType] = useState<ReportType | null>(null);
+    const [selectedType, setSelectedType] = useState<MapPointType | null>(null);
     const [address, setAddress] = useState('');
     const [details, setDetails] = useState('');
 
@@ -106,20 +104,17 @@ const RegistrationModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         onClose();
     }
 
-    const handleTypeSelect = (type: ReportType) => {
+    const handleTypeSelect = (type: MapPointType) => {
         setSelectedType(type);
         handleNext();
     };
 
     const handleSubmit = () => {
-        // In a real app, you'd send this data to an API
         console.log('Submitting occurrence:', { type: selectedType, address, details });
-        handleNext(); // Move to success step
+        handleNext();
     };
 
-    const reportTypesForRegistration = Object.values(ReportType).filter(
-        type => type !== ReportType.OCCURRENCES
-    );
+    const reportTypesForRegistration = Object.keys(MENU_STRUCTURE.MAP.submenus) as MapPointType[];
 
     const renderStepContent = () => {
         switch (step) {
@@ -130,7 +125,9 @@ const RegistrationModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                         <p className="text-lg text-center text-brand-dark/80">Selecione uma das opções abaixo para continuar.</p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
                             {reportTypesForRegistration.map((type) => {
-                                const { Icon, label } = REPORT_ICONS[type];
+                                const submenu = MENU_STRUCTURE.MAP.submenus[type];
+                                if (!submenu) return null;
+                                const { Icon, label } = submenu;
                                 return (
                                     <button
                                         key={type}
@@ -148,8 +145,9 @@ const RegistrationModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     </>
                 );
             case 2:
+                // Same as before
                 return (
-                    <>
+                     <>
                         <h2 className="font-bold text-3xl">Informe o endereço</h2>
                         <p className="text-lg text-brand-dark/80">Digite o endereço completo da ocorrência.</p>
                         <div className="relative pt-4">
@@ -171,12 +169,13 @@ const RegistrationModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     </>
                 );
             case 3:
+                 const selectedLabel = selectedType ? MENU_STRUCTURE.MAP.submenus[selectedType]?.label : 'N/A';
                  return (
                     <>
                         <h2 className="font-bold text-3xl">Detalhes e Confirmação</h2>
                         <p className="text-lg text-brand-dark/80">Revise as informações e adicione mais detalhes se necessário.</p>
                         <div className="bg-brand-dark/5 p-4 rounded-lg my-4 space-y-2">
-                            <p><strong>Tipo:</strong> {selectedType ? REPORT_ICONS[selectedType].label : 'N/A'}</p>
+                            <p><strong>Tipo:</strong> {selectedLabel}</p>
                             <p><strong>Endereço:</strong> {address}</p>
                         </div>
                         <textarea
@@ -192,6 +191,7 @@ const RegistrationModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     </>
                 );
             case 4:
+                // Same as before
                 return (
                     <div className="text-center flex flex-col items-center justify-center space-y-4">
                         <CheckCircleIcon className="w-24 h-24 text-brand-dark"/>
@@ -241,12 +241,12 @@ const RegistrationTrigger: React.FC<{onOpen: () => void}> = ({ onOpen }) => (
 );
 
 
-const MainContent: React.FC<{ activeReportType: ReportType | null }> = ({ activeReportType }) => {
+const MainContent: React.FC<{ activeSubMenu: MapPointType | null }> = ({ activeSubMenu }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <main className="flex-1 relative bg-brand-dark overflow-hidden">
-      <MapComponent activeReportType={activeReportType} />
+    <main className="flex-1 relative bg-brand-dark overflow-hidden h-full">
+      <MapComponent activeSubMenu={activeSubMenu} />
       
       <div className="absolute top-6 left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-[1000]">
           <div className="relative">

@@ -68,7 +68,7 @@ const OccurrenceModal: React.FC<{
 };
 
 
-const OccurrencesPanel: React.FC = () => {
+const OccurrencesList: React.FC<{ title: string; assigneeId?: string; }> = ({ title, assigneeId }) => {
   const [occurrences, setOccurrences] = useState<Occurrence[]>(OCCURRENCES_DATA);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('Todos');
@@ -82,6 +82,8 @@ const OccurrencesPanel: React.FC = () => {
 
   const filteredOccurrences = useMemo(() => {
     return occurrences.filter(o => {
+        const matchesAssignee = !assigneeId || o.assigneeId === assigneeId;
+
         const matchesSearch = searchTerm === '' || 
             o.problem.toLowerCase().includes(searchTerm.toLowerCase()) ||
             o.territory.toLowerCase().includes(searchTerm.toLowerCase());
@@ -89,9 +91,9 @@ const OccurrencesPanel: React.FC = () => {
         const matchesStatus = statusFilter === 'Todos' || o.status === statusFilter;
         const matchesSector = sectorFilter === 'Todos' || o.sector === sectorFilter;
         
-        return matchesSearch && matchesStatus && matchesSector;
+        return matchesAssignee && matchesSearch && matchesStatus && matchesSector;
     });
-  }, [occurrences, searchTerm, statusFilter, sectorFilter]);
+  }, [occurrences, searchTerm, statusFilter, sectorFilter, assigneeId]);
 
   const handleUpdateOccurrence = (updatedOccurrence: Occurrence) => {
       setOccurrences(prev => prev.map(o => o.id === updatedOccurrence.id ? updatedOccurrence : o));
@@ -102,8 +104,8 @@ const OccurrencesPanel: React.FC = () => {
 
   return (
     <>
-      <div className="flex-1 bg-brand-dark p-8 overflow-y-auto">
-        <h2 className="text-3xl font-bold text-brand-light mb-6">Painel de Ocorrências</h2>
+      <div className="flex-1 bg-brand-dark p-8">
+        <h2 className="text-3xl font-bold text-brand-light mb-6">{title}</h2>
         
         <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
@@ -169,4 +171,4 @@ const OccurrencesPanel: React.FC = () => {
   );
 };
 
-export default OccurrencesPanel;
+export default OccurrencesList;

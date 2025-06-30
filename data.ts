@@ -1,25 +1,27 @@
 
-import { ReportType, MapPoint, Occurrence } from './types';
+import { SubMenuKey, MapPoint, Occurrence, MapPointType } from './types';
 
-export const MAP_DATA: { [key in ReportType]?: MapPoint[] } = {
-  [ReportType.FLOODS]: [
+export const MAP_DATA: { [key in MapPointType]?: MapPoint[] } = {
+  [SubMenuKey.FLOODS]: [
     { id: 'f1', coords: [-22.911, -43.23], title: 'Ponto de Alagamento na Tijuca', description: 'Acúmulo de água na Rua Conde de Bonfim, próximo à Praça Saens Peña.', date: '25/07/2024' },
     { id: 'f2', coords: [-22.95, -43.18], title: 'Enchente em Botafogo', description: 'Rua Voluntários da Pátria com bolsão d\'água intransitável.', date: '25/07/2024' },
     { id: 'f3', coords: [-22.88, -43.35], title: 'Risco de Deslizamento na Gardênia Azul', description: 'Chuvas fortes aumentam o risco na comunidade.', date: '24/07/2024' },
   ],
-  [ReportType.VULNERABLE_HOUSES]: [
+  [SubMenuKey.VULNERABLE_HOUSES]: [
     { id: 'vh1', coords: [-22.90, -43.39], title: 'Casa com Risco Estrutural no Rio das Pedras', description: 'Residência em área de encosta com rachaduras visíveis.', date: '22/07/2024' },
     { id: 'vh2', coords: [-22.85, -43.29], title: 'Moradia em Área de Risco no Complexo do Alemão', description: 'Construção precária em ponto de alagamento recorrente.', date: '20/07/2024' },
   ],
-  [ReportType.DONATIONS]: [
+  [SubMenuKey.DONATIONS]: [
     { id: 'd1', coords: [-22.97, -43.21], title: 'Ponto de Coleta - Associação de Moradores', description: 'Recebendo alimentos não perecíveis, água e roupas. Aberto das 9h às 17h.', date: '26/07/2024' },
     { id: 'd2', coords: [-22.93, -43.20], title: 'Igreja local - Centro de Doações', description: 'Necessitando de produtos de higiene pessoal e material de limpeza.', date: '26/07/2024' },
   ],
-  [ReportType.VOLUNTEERS]: [
+  [SubMenuKey.VOLUNTEERS]: [
     { id: 'v1', coords: [-22.96, -43.19], title: 'Grupo de Voluntários de Copacabana', description: 'Organizando mutirão de limpeza para o próximo fim de semana. Contato: (21) 9999-8888', date: '23/07/2024' },
     { id: 'v2', coords: [-22.91, -43.17], title: 'Base de Apoio no Aterro do Flamengo', description: 'Voluntários auxiliando na distribuição de doações e apoio logístico.', date: '25/07/2024' },
   ]
 };
+
+const currentUser = 'user123';
 
 export const OCCURRENCES_DATA: Occurrence[] = [
   { 
@@ -28,7 +30,8 @@ export const OCCURRENCES_DATA: Occurrence[] = [
     problem: 'Poste de luz com risco de queda', 
     sector: 'Iluminação Pública', 
     status: 'Pendente',
-    details: 'O poste na esquina da Rua Conde de Bonfim com a Rua Uruguai está visivelmente inclinado após a tempestade de ontem. A base parece comprometida e há risco iminente de queda sobre a via. Moradores locais isolaram a área com fitas.'
+    details: 'O poste na esquina da Rua Conde de Bonfim com a Rua Uruguai está visivelmente inclinado após a tempestade de ontem. A base parece comprometida e há risco iminente de queda sobre a via. Moradores locais isolaram a área com fitas.',
+    assigneeId: currentUser,
   },
   { 
     id: 'o2', 
@@ -52,7 +55,8 @@ export const OCCURRENCES_DATA: Occurrence[] = [
     problem: 'Sinal de trânsito quebrado', 
     sector: 'Engenharia de Tráfego', 
     status: 'Resolvido',
-    details: 'O semáforo no cruzamento da Avenida Atlântica com a Rua Figueiredo de Magalhães estava com a luz vermelha queimada, causando confusão e risco de acidentes. A equipe de manutenção já realizou o reparo no dia 26/07.'
+    details: 'O semáforo no cruzamento da Avenida Atlântica com a Rua Figueiredo de Magalhães estava com a luz vermelha queimada, causando confusão e risco de acidentes. A equipe de manutenção já realizou o reparo no dia 26/07.',
+    assigneeId: currentUser,
   },
   { 
     id: 'o5', 
@@ -60,7 +64,8 @@ export const OCCURRENCES_DATA: Occurrence[] = [
     problem: 'Falta de água recorrente', 
     sector: 'Saneamento Básico', 
     status: 'Em Andamento',
-    details: 'Moradores da região oeste da Gardênia Azul relatam interrupção no fornecimento de água por mais de 48 horas. É um problema crônico que se agrava em períodos de calor. Equipes da concessionária foram acionadas.'
+    details: 'Moradores da região oeste da Gardênia Azul relatam interrupção no fornecimento de água por mais de 48 horas. É um problema crônico que se agrava em períodos de calor. Equipes da concessionária foram acionadas.',
+    assigneeId: currentUser,
   },
   { 
     id: 'o6', 

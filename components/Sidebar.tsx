@@ -1,27 +1,32 @@
 
-
-import React from 'react';
-import { REPORT_ICONS } from '../constants';
-import { ReportType } from '../types';
+import React, { useState, useEffect } from 'react';
+import { MENU_STRUCTURE } from '../constants';
+import { MenuKey, SubMenuKey, ActiveView } from '../types';
+import { ChevronDownIcon } from './icons';
 
 interface SidebarProps {
-  activeItem: ReportType | null;
-  setActiveItem: (item: ReportType | null) => void;
+  activeView: ActiveView;
+  setActiveView: (view: ActiveView) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeItem, setActiveItem }) => {
-  const navItems = [
-    ReportType.FLOODS,
-    ReportType.VULNERABLE_HOUSES,
-    ReportType.DONATIONS,
-    ReportType.VOLUNTEERS,
-    ReportType.OCCURRENCES,
-  ];
-  
-  const handleItemClick = (itemType: ReportType) => {
-    // If the clicked item is already active, deactivate it (set to null).
-    // Otherwise, activate the clicked item.
-    setActiveItem(activeItem === itemType ? null : itemType);
+const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
+  const [openMenu, setOpenMenu] = useState<MenuKey | null>(activeView.menu);
+
+  useEffect(() => {
+    // Keep accordion open if the active view is within it
+    if (activeView.menu) {
+      setOpenMenu(activeView.menu);
+    }
+  }, [activeView.menu]);
+
+  const handleMenuClick = (menuKey: MenuKey) => {
+    // Clicking the main menu item shows its default view (Dashboard for Occurrences)
+    setActiveView({ menu: menuKey, submenu: null });
+    setOpenMenu(prevOpenMenu => (prevOpenMenu === menuKey ? null : menuKey));
+  };
+
+  const handleSubMenuClick = (menuKey: MenuKey, subMenuKey: SubMenuKey) => {
+    setActiveView({ menu: menuKey, submenu: subMenuKey });
   };
 
   return (
@@ -32,32 +37,59 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, setActiveItem }) => {
       </div>
       
       <nav className="flex-grow flex flex-col space-y-2 mt-4">
-        {navItems.map((itemType) => {
-          const { Icon, name } = REPORT_ICONS[itemType];
-          const isActive = activeItem === itemType;
-          
-          return (
-            <button
-              key={itemType}
-              onClick={() => handleItemClick(itemType)}
-              className={`flex items-center justify-between w-full px-4 py-3.5 rounded-lg transition-colors duration-200 relative text-left ${
-                isActive 
-                  ? 'bg-brand-green/[.10]' 
-                  : 'hover:bg-brand-light/5'
-              }`}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              {isActive && <div className="absolute left-0 top-2 bottom-2 w-1 bg-brand-green rounded-r-md"></div>}
+        {(Object.keys(MENU_STRUCTURE) as MenuKey[]).map((menuKey) => {
+          const menu = MENU_STRUCTURE[menuKey];
+          const isMenuOpen = openMenu === menuKey;
+          const isMenuActive = activeView.menu === menuKey && activeView.submenu === null;
 
-              <span className={`font-medium text-sm uppercase tracking-wider pl-2 ${
-                isActive ? 'text-brand-green' : 'text-brand-light'
-              }`}>
-                {name}
-              </span>
-              <Icon className={`w-6 h-6 ${
-                isActive ? 'text-brand-green' : 'text-brand-light/70'
-              }`} />
-            </button>
+          return (
+            <div key={menuKey}>
+              <button
+                onClick={() => handleMenuClick(menuKey)}
+                className={`flex items-center justify-between w-full px-4 py-3.5 rounded-lg transition-colors duration-200 relative text-left ${
+                  isMenuActive ? 'bg-brand-green/[.10]' : 'hover:bg-brand-light/5'
+                }`}
+                aria-expanded={isMenuOpen}
+              >
+                {isMenuActive && <div className="absolute left-0 top-2 bottom-2 w-1 bg-brand-green rounded-r-md"></div>}
+                <div className="flex items-center space-x-4">
+                  <menu.Icon className={`w-6 h-6 ${isMenuActive ? 'text-brand-green' : 'text-brand-light/70'}`} />
+                  <span className={`font-medium text-sm uppercase tracking-wider ${isMenuActive ? 'text-brand-green' : 'text-brand-light'}`}>
+                    {menu.label}
+                  </span>
+                </div>
+                <ChevronDownIcon className={`w-5 h-5 text-brand-light/70 transition-transform duration-300 ${isMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {isMenuOpen && (
+                <div className="pl-6 pt-2 pb-1 space-y-1">
+                  {(Object.keys(menu.submenus) as SubMenuKey[]).map((subMenuKey) => {
+                     const submenu = menu.submenus[subMenuKey];
+                     if (!submenu) return null;
+                     const isSubMenuActive = activeView.submenu === subMenuKey;
+                     
+                     return (
+                        <button
+                          key={subMenuKey}
+                          onClick={() => handleSubMenuClick(menuKey, subMenuKey)}
+                          className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors duration-200 relative text-left ${
+                            isSubMenuActive ? 'bg-brand-green/[.10]' : 'hover:bg-brand-light/5'
+                          }`}
+                          aria-current={isSubMenuActive ? 'page' : undefined}
+                        >
+                           {isSubMenuActive && <div className="absolute left-0 top-2 bottom-2 w-1 bg-brand-green rounded-r-md"></div>}
+                           <div className="flex items-center space-x-4">
+                            <submenu.Icon className={`w-6 h-6 ${isSubMenuActive ? 'text-brand-green' : 'text-brand-light/60'}`} />
+                            <span className={`font-medium text-xs uppercase tracking-wider ${isSubMenuActive ? 'text-brand-green' : 'text-brand-light'}`}>
+                                {submenu.label}
+                            </span>
+                           </div>
+                        </button>
+                     );
+                  })}
+                </div>
+              )}
+            </div>
           );
         })}
       </nav>

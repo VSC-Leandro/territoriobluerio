@@ -1,12 +1,47 @@
 
 import React from 'react';
-import { ReportType } from './types';
-import { FloodsIcon, VulnerableHouseIcon, DonationIcon, VolunteersIcon, AlertTriangleIcon } from './components/icons';
+import { MenuKey, SubMenuKey } from './types';
+import { 
+    FloodsIcon, 
+    VulnerableHouseIcon, 
+    DonationIcon, 
+    VolunteersIcon, 
+    MapIcon, 
+    BarChartIcon,
+    UserIcon,
+    ListIcon
+} from './components/icons';
 
-export const REPORT_ICONS: { [key in ReportType]: { Icon: React.FC<{className?: string}>, label: string, name: string } } = {
-  [ReportType.FLOODS]: { Icon: FloodsIcon, label: 'Enchente', name: 'ENCHENTES' },
-  [ReportType.VULNERABLE_HOUSES]: { Icon: VulnerableHouseIcon, label: 'Casa Vulnerável', name: 'CASAS VULNERÁVEIS'},
-  [ReportType.DONATIONS]: { Icon: DonationIcon, label: 'Doação', name: 'DOAÇÕES' },
-  [ReportType.VOLUNTEERS]: { Icon: VolunteersIcon, label: 'Voluntário', name: 'VOLUNTÁRIOS' },
-  [ReportType.OCCURRENCES]: { Icon: AlertTriangleIcon, label: 'Ocorrência', name: 'OCORRÊNCIAS' },
+type MenuStructureType = {
+  [key in MenuKey]: {
+    label: string;
+    Icon: React.FC<{ className?: string }>;
+    submenus: {
+      [key in SubMenuKey]?: {
+        label: string;
+        Icon: React.FC<{ className?: string }>;
+      };
+    };
+  };
+};
+
+export const MENU_STRUCTURE: MenuStructureType = {
+  [MenuKey.MAP]: {
+    label: 'Mapa',
+    Icon: MapIcon,
+    submenus: {
+      [SubMenuKey.FLOODS]: { label: 'Enchentes', Icon: FloodsIcon },
+      [SubMenuKey.VULNERABLE_HOUSES]: { label: 'Casas Vulneráveis', Icon: VulnerableHouseIcon },
+      [SubMenuKey.DONATIONS]: { label: 'Doações', Icon: DonationIcon },
+      [SubMenuKey.VOLUNTEERS]: { label: 'Voluntários', Icon: VolunteersIcon },
+    },
+  },
+  [MenuKey.OCCURRENCES]: {
+    label: 'Ocorrências',
+    Icon: BarChartIcon,
+    submenus: {
+      [SubMenuKey.MY_OCCURRENCES]: { label: 'Minhas Ocorrências', Icon: UserIcon },
+      [SubMenuKey.LIST_OCCURRENCES]: { label: 'Lista de Ocorrências', Icon: ListIcon },
+    },
+  },
 };

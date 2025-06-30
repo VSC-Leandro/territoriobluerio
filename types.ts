@@ -1,9 +1,25 @@
-export enum ReportType {
+
+export enum MenuKey {
+  MAP = 'MAP',
+  OCCURRENCES = 'OCCURRENCES',
+}
+
+export enum SubMenuKey {
+  // Map Submenus
   FLOODS = 'FLOODS',
   VULNERABLE_HOUSES = 'VULNERABLE_HOUSES',
   DONATIONS = 'DONATIONS',
   VOLUNTEERS = 'VOLUNTEERS',
-  OCCURRENCES = 'OCCURRENCES',
+  // Occurrences Submenus
+  MY_OCCURRENCES = 'MY_OCCURRENCES',
+  LIST_OCCURRENCES = 'LIST_OCCURRENCES',
+}
+
+export type MapPointType = SubMenuKey.FLOODS | SubMenuKey.VULNERABLE_HOUSES | SubMenuKey.DONATIONS | SubMenuKey.VOLUNTEERS;
+
+export interface ActiveView {
+  menu: MenuKey | null;
+  submenu: SubMenuKey | null;
 }
 
 export interface MapPoint {
@@ -21,4 +37,5 @@ export interface Occurrence {
   sector: string;
   status: 'Pendente' | 'Em Andamento' | 'Resolvido';
   details: string;
+  assigneeId?: string;
 }
