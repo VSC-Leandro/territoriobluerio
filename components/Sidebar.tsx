@@ -27,10 +27,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, se
     // Clicking the main menu item shows its default view (Dashboard for Occurrences)
     setActiveView({ menu: menuKey, submenu: null });
     setOpenMenu(prevOpenMenu => (prevOpenMenu === menuKey ? null : menuKey));
-    // Close sidebar if it's a main view click on mobile
-    if (window.innerWidth < 768) {
-      closeSidebar();
-    }
   };
 
   const handleSubMenuClick = (menuKey: MenuKey, subMenuKey: SubMenuKey) => {

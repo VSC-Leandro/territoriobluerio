@@ -241,7 +241,7 @@ const MyOccurrences: React.FC = () => {
                             <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-brand-green/30"></div>
                              {selectedOccurrence.history.map((item, index) => (
                                 <div key={index} className="mb-4 relative">
-                                    <div className="absolute -left-[5px] top-1 w-4 h-4 bg-brand-green rounded-full border-4 border-brand-dark"></div>
+                                    <div className="absolute -left-6 top-1 w-4 h-4 bg-brand-green rounded-full border-4 border-brand-dark"></div>
                                     <p className="font-semibold text-brand-light">{item.status}</p>
                                     <p className="text-xs text-brand-light/60">{item.date}</p>
                                     {item.notes && <p className="text-sm text-brand-light/80 mt-1 italic">"{item.notes}"</p>}

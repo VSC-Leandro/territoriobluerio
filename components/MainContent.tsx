@@ -248,7 +248,7 @@ const MainContent: React.FC<{ activeSubMenu: MapPointType | null }> = ({ activeS
     <main className="flex-1 relative bg-brand-dark overflow-hidden h-full">
       <MapComponent activeSubMenu={activeSubMenu} />
       
-      <div className="absolute top-4 md:top-6 left-20 right-4 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-md md:right-auto px-0 z-[1000]">
+      <div className="absolute top-4 md:top-6 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-md md:right-auto px-0 z-[1000]">
           <div className="relative">
               <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-green" />
               <input
