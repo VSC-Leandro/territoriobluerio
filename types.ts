@@ -1,4 +1,3 @@
-
 export enum MenuKey {
   MAP = 'MAP',
   OCCURRENCES = 'OCCURRENCES',
@@ -35,7 +34,21 @@ export interface Occurrence {
   territory: string;
   problem: string;
   sector: string;
-  status: 'Pendente' | 'Em Andamento' | 'Resolvido';
+  status: 'Pendente' | 'A Caminho' | 'No Local' | 'Resolvido' | 'Não Resolvido';
   details: string;
   assigneeId?: string;
+  reporter: {
+    name: string;
+    phone: string;
+  };
+  history: {
+    status: string;
+    date: string;
+    notes?: string;
+  }[];
+  report?: {
+    resolved: boolean;
+    reason?: string;
+    notes: string;
+  };
 }

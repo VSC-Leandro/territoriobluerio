@@ -129,6 +129,40 @@
       .leaflet-popup-tip {
           background: #2CC6A9 !important;
       }
+      
+      /* Responsive Table Styles */
+      @media screen and (max-width: 768px) {
+        .responsive-table thead {
+          display: none;
+        }
+        .responsive-table tr {
+          display: block;
+          margin-bottom: 1rem;
+          border-radius: 0.5rem;
+          padding: 1rem;
+          background-color: rgba(10, 26, 34, 0.7);
+          border: 1px solid rgba(57, 250, 201, 0.2);
+        }
+        .responsive-table td {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem 0.25rem;
+          border-bottom: 1px solid rgba(57, 250, 201, 0.1);
+          text-align: right;
+        }
+        .responsive-table td:last-child {
+          border-bottom: 0;
+        }
+        .responsive-table td::before {
+          content: attr(data-label);
+          font-weight: 600;
+          color: #39FAC9;
+          text-align: left;
+          padding-right: 1rem;
+          white-space: nowrap;
+        }
+      }
     </style>
   <script type="importmap">
 {

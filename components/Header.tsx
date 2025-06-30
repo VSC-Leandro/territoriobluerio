@@ -1,7 +1,12 @@
 
 import React from 'react';
+import { MenuIcon } from './icons';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onMenuClick: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   // Define alert data with municipalities, risk levels, and corresponding colors.
   const alerts = [
     { municipality: 'Rio de Janeiro', riskLevel: 'Risco Alto', colorClass: 'text-brand-red-light' },
@@ -27,7 +32,14 @@ const Header: React.FC = () => {
 
   return (
     // The main header container. overflow-hidden clips the content.
-    <header className="bg-black font-bold w-full overflow-hidden h-10 flex items-center">
+    <header className="bg-black font-bold w-full overflow-hidden h-10 flex items-center shrink-0 relative">
+       <button 
+        onClick={onMenuClick} 
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 md:hidden p-2 text-brand-green"
+        aria-label="Abrir menu"
+      >
+        <MenuIcon className="w-6 h-6" />
+      </button>
       {/* This container will be animated. It holds two copies of the content. */}
       <div className="animate-marquee flex">
         <AlertList />

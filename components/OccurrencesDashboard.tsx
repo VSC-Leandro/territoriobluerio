@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { OCCURRENCES_DATA } from '../data';
 import { Occurrence } from '../types';
@@ -48,7 +47,7 @@ const DonutChart: React.FC<{ data: { label: string; value: number; color: string
     const radius = 80;
     const innerRadius = 50;
     const size = radius * 2;
-    let startAngle = 0;
+    let startAngle = -Math.PI / 2;
 
     const getArcPath = (start: number, end: number) => {
         const startPoint = {
@@ -99,7 +98,10 @@ const OccurrencesDashboard: React.FC = () => {
 
     const filteredOccurrences = useMemo(() => {
         return OCCURRENCES_DATA.filter(o => {
-            const matchesStatus = statusFilter === 'Todos' || o.status === statusFilter;
+            const isInProgress = o.status === 'A Caminho' || o.status === 'No Local';
+            const matchesStatus = statusFilter === 'Todos' ||
+                (statusFilter === 'Em Andamento' && isInProgress) ||
+                o.status === statusFilter;
             const matchesSector = sectorFilter === 'Todos' || o.sector === sectorFilter;
             return matchesStatus && matchesSector;
         });
@@ -109,8 +111,9 @@ const OccurrencesDashboard: React.FC = () => {
         return {
             total: filteredOccurrences.length,
             pending: filteredOccurrences.filter(o => o.status === 'Pendente').length,
-            inProgress: filteredOccurrences.filter(o => o.status === 'Em Andamento').length,
+            inProgress: filteredOccurrences.filter(o => o.status === 'A Caminho' || o.status === 'No Local').length,
             resolved: filteredOccurrences.filter(o => o.status === 'Resolvido').length,
+            notResolved: filteredOccurrences.filter(o => o.status === 'Não Resolvido').length,
         };
     }, [filteredOccurrences]);
 
@@ -126,6 +129,7 @@ const OccurrencesDashboard: React.FC = () => {
         { label: 'Pendente', value: kpiData.pending, color: '#FBC02D' },
         { label: 'Em Andamento', value: kpiData.inProgress, color: '#3B82F6' },
         { label: 'Resolvido', value: kpiData.resolved, color: '#39FAC9' },
+        { label: 'Não Resolvido', value: kpiData.notResolved, color: '#F28B82' }
     ], [kpiData]);
     
     const selectStyles = "bg-brand-dark/50 border-2 border-brand-green/30 text-brand-light rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-brand-green-dark transition-colors";
@@ -143,6 +147,7 @@ const OccurrencesDashboard: React.FC = () => {
                     <option value="Pendente">Pendente</option>
                     <option value="Em Andamento">Em Andamento</option>
                     <option value="Resolvido">Resolvido</option>
+                    <option value="Não Resolvido">Não Resolvido</option>
                 </select>
                 <select value={sectorFilter} onChange={e => setSectorFilter(e.target.value)} className={selectStyles}>
                     {uniqueSectors.map(sector => (
@@ -151,11 +156,12 @@ const OccurrencesDashboard: React.FC = () => {
                 </select>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <KpiCard title="Total de Ocorrências" value={kpiData.total} color="#E0E0E0" />
                 <KpiCard title="Pendentes" value={kpiData.pending} color="#FBC02D" />
                 <KpiCard title="Em Andamento" value={kpiData.inProgress} color="#3B82F6" />
                 <KpiCard title="Resolvidas" value={kpiData.resolved} color="#39FAC9" />
+                 <KpiCard title="Não Resolvidas" value={kpiData.notResolved} color="#F28B82" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

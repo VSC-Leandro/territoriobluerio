@@ -10,6 +10,7 @@ import { ActiveView, MenuKey, SubMenuKey, MapPointType } from './types';
 
 const App: React.FC = () => {
   const [activeView, setActiveView] = useState<ActiveView>({ menu: MenuKey.MAP, submenu: null });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const renderContent = () => {
     switch (activeView.menu) {
@@ -34,9 +35,14 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-brand-dark text-brand-light font-sans h-screen w-screen flex flex-col overflow-hidden">
-      <Header />
+      <Header onMenuClick={() => setIsSidebarOpen(true)} />
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar activeView={activeView} setActiveView={setActiveView} />
+        <Sidebar 
+          activeView={activeView} 
+          setActiveView={setActiveView} 
+          isOpen={isSidebarOpen}
+          setIsOpen={setIsSidebarOpen}
+        />
         <div className="flex-1 overflow-y-auto">
           {renderContent()}
         </div>
