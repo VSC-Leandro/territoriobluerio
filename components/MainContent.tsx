@@ -227,10 +227,10 @@ const RegistrationTrigger: React.FC<{onOpen: () => void}> = ({ onOpen }) => (
         {/* Mobile Button: Round with Plus Icon */}
         <button 
             onClick={onOpen} 
-            className="md:hidden absolute bottom-6 right-6 bg-brand-green text-brand-dark w-16 h-16 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors cursor-pointer z-[1000]"
+            className="md:hidden absolute bottom-8 right-6 bg-brand-green text-brand-dark w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors cursor-pointer z-[1000]"
             aria-label="Registrar uma ocorrência"
         >
-            <PlusIcon className="w-8 h-8"/>
+            <PlusIcon className="w-7 h-7"/>
         </button>
 
         {/* Desktop Button: Original Design (cleaned up for md+) */}
@@ -263,7 +263,7 @@ const MainContent: React.FC<{ activeSubMenu: MapPointType | null }> = ({ activeS
     <main className="flex-1 relative bg-brand-dark overflow-hidden h-full">
       <MapComponent activeSubMenu={activeSubMenu} />
       
-      <div className="absolute top-4 md:top-6 left-20 right-4 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-md md:right-auto px-0 z-[1000]">
+      <div className="absolute top-4 md:top-6 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-md md:right-auto z-[1000]">
           <div className="relative">
               <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-green" />
               <input
