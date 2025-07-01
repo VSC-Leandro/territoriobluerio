@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { MenuIcon } from './icons';
 
@@ -40,8 +39,8 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
       >
         <MenuIcon className="w-6 h-6" />
       </button>
-      {/* This container will be animated. It holds two copies of the content. */}
-      <div className="animate-marquee flex">
+      {/* This container will be animated. It holds two copies of the content. Hidden on mobile. */}
+      <div className="hidden md:flex animate-marquee">
         <AlertList />
         <AlertList />
       </div>

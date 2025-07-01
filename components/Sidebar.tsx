@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { MENU_STRUCTURE } from '../constants';
 import { MenuKey, SubMenuKey, ActiveView } from '../types';
@@ -27,6 +26,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, se
     // Clicking the main menu item shows its default view (Dashboard for Occurrences)
     setActiveView({ menu: menuKey, submenu: null });
     setOpenMenu(prevOpenMenu => (prevOpenMenu === menuKey ? null : menuKey));
+    // Close sidebar if it's a main view click on mobile
+    if (window.innerWidth < 768) {
+      closeSidebar();
+    }
   };
 
   const handleSubMenuClick = (menuKey: MenuKey, subMenuKey: SubMenuKey) => {
@@ -37,12 +40,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, se
   return (
     <>
       <div 
-        className={`fixed inset-0 bg-black/60 z-30 transition-opacity md:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed inset-0 bg-black/60 z-[1100] transition-opacity md:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={closeSidebar}
         aria-hidden="true"
       ></div>
 
-      <aside className={`fixed top-0 left-0 h-full z-40 w-[300px] bg-brand-dark flex flex-col shrink-0 p-6 space-y-6 transition-transform duration-300 ease-in-out md:relative md:w-[380px] md:translate-x-0 md:z-auto md:border-r-2 md:border-brand-green ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`fixed top-0 left-0 h-full z-[1200] w-[300px] bg-brand-dark flex flex-col shrink-0 p-6 space-y-6 transition-transform duration-300 ease-in-out md:relative md:w-[380px] md:translate-x-0 md:z-auto md:border-r-2 md:border-brand-green ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-start justify-between">
           <div className="flex flex-col items-start space-y-2">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-brand-light">TERRITÓRIO</h1>

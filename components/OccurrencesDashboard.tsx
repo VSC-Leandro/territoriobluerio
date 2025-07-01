@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { OCCURRENCES_DATA } from '../data';
 import { Occurrence } from '../types';
@@ -157,7 +156,7 @@ const OccurrencesDashboard: React.FC = () => {
                 </select>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <KpiCard title="Total de Ocorrências" value={kpiData.total} color="#E0E0E0" />
                 <KpiCard title="Pendentes" value={kpiData.pending} color="#FBC02D" />
                 <KpiCard title="Em Andamento" value={kpiData.inProgress} color="#3B82F6" />

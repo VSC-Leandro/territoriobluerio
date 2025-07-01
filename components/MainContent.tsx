@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
 import ReactDOMServer from 'react-dom/server';
 import { MENU_STRUCTURE } from '../constants';
 import { MapPointType, SubMenuKey, MapPoint } from '../types';
 import { MAP_DATA } from '../data';
-import { SearchIcon, FloodsIcon, DonationIcon, VolunteersIcon, CheckCircleIcon } from './icons';
+import { SearchIcon, FloodsIcon, DonationIcon, VolunteersIcon, CheckCircleIcon, PlusIcon } from './icons';
 
 const MapComponent: React.FC<{ activeSubMenu: MapPointType | null }> = ({ activeSubMenu }) => {
     const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -224,20 +223,36 @@ const RegistrationModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
 
 const RegistrationTrigger: React.FC<{onOpen: () => void}> = ({ onOpen }) => (
-    <button onClick={onOpen} className="absolute bottom-6 right-6 md:bottom-8 md:right-8 bg-brand-green text-brand-dark p-3 md:p-4 rounded-lg flex items-center space-x-2 md:space-x-4 shadow-lg hover:bg-white transition-colors cursor-pointer z-[1000]">
-        <div className="flex -space-x-3 md:-space-x-4">
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-brand-dark text-brand-green flex items-center justify-center border-2 border-brand-green">
-                <FloodsIcon className="w-5 h-5 md:w-6 md:h-6"/>
+    <>
+        {/* Mobile Button: Round with Plus Icon */}
+        <button 
+            onClick={onOpen} 
+            className="md:hidden absolute bottom-6 right-6 bg-brand-green text-brand-dark w-16 h-16 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors cursor-pointer z-[1000]"
+            aria-label="Registrar uma ocorrência"
+        >
+            <PlusIcon className="w-8 h-8"/>
+        </button>
+
+        {/* Desktop Button: Original Design (cleaned up for md+) */}
+        <button 
+            onClick={onOpen} 
+            className="hidden md:flex absolute bottom-8 right-8 bg-brand-green text-brand-dark p-4 rounded-lg items-center space-x-4 shadow-lg hover:bg-white transition-colors cursor-pointer z-[1000]"
+            aria-label="Registrar uma ocorrência"
+        >
+            <div className="flex -space-x-4">
+                <div className="w-12 h-12 rounded-full bg-brand-dark text-brand-green flex items-center justify-center border-2 border-brand-green">
+                    <FloodsIcon className="w-6 h-6"/>
+                </div>
+                <div className="w-12 h-12 rounded-full bg-brand-dark text-brand-green flex items-center justify-center border-2 border-brand-green">
+                    <DonationIcon className="w-6 h-6"/>
+                </div>
+                <div className="w-12 h-12 rounded-full bg-brand-dark text-brand-green flex items-center justify-center border-2 border-brand-green">
+                    <VolunteersIcon className="w-6 h-6"/>
+                </div>
             </div>
-             <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-brand-dark text-brand-green flex items-center justify-center border-2 border-brand-green">
-                <DonationIcon className="w-5 h-5 md:w-6 md:h-6"/>
-            </div>
-             <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-brand-dark text-brand-green flex items-center justify-center border-2 border-brand-green">
-                <VolunteersIcon className="w-5 h-5 md:w-6 md:h-6"/>
-            </div>
-        </div>
-        <p className="font-bold text-base md:text-lg text-left">REGISTRE<br className="sm:hidden"/> UMA<br/>OCORRÊNCIA</p>
-    </button>
+            <p className="font-bold text-lg text-left">REGISTRE<br/>UMA<br/>OCORRÊNCIA</p>
+        </button>
+    </>
 );
 
 
@@ -248,7 +263,7 @@ const MainContent: React.FC<{ activeSubMenu: MapPointType | null }> = ({ activeS
     <main className="flex-1 relative bg-brand-dark overflow-hidden h-full">
       <MapComponent activeSubMenu={activeSubMenu} />
       
-      <div className="absolute top-4 md:top-6 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-md md:right-auto px-0 z-[1000]">
+      <div className="absolute top-4 md:top-6 left-20 right-4 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-md md:right-auto px-0 z-[1000]">
           <div className="relative">
               <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-green" />
               <input
