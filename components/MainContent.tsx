@@ -227,7 +227,7 @@ const RegistrationTrigger: React.FC<{onOpen: () => void}> = ({ onOpen }) => (
         {/* Mobile Button: Round with Plus Icon */}
         <button 
             onClick={onOpen} 
-            className="md:hidden absolute bottom-8 right-6 bg-brand-green text-brand-dark w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors cursor-pointer z-[1000]"
+            className="md:hidden absolute bottom-20 right-6 bg-brand-green text-brand-dark w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors cursor-pointer z-[1000]"
             aria-label="Registrar uma ocorrência"
         >
             <PlusIcon className="w-7 h-7"/>
