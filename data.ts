@@ -29,6 +29,8 @@ export const OCCURRENCES_DATA: Occurrence[] = [
   { 
     id: 'o1', 
     territory: 'Tijuca', 
+    region: 'Região Metropolitana',
+    city: 'Rio de Janeiro',
     problem: 'Poste de luz com risco de queda', 
     sector: 'Iluminação Pública', 
     status: 'Pendente',
@@ -42,6 +44,8 @@ export const OCCURRENCES_DATA: Occurrence[] = [
   { 
     id: 'o2', 
     territory: 'Botafogo', 
+    region: 'Região Metropolitana',
+    city: 'Rio de Janeiro',
     problem: 'Boca de lobo entupida causando alagamento', 
     sector: 'Conservação', 
     status: 'A Caminho',
@@ -56,6 +60,8 @@ export const OCCURRENCES_DATA: Occurrence[] = [
   { 
     id: 'o3', 
     territory: 'Complexo do Alemão', 
+    region: 'Região Metropolitana',
+    city: 'Rio de Janeiro',
     problem: 'Coleta de lixo irregular', 
     sector: 'Limpeza Urbana', 
     status: 'Pendente',
@@ -68,6 +74,8 @@ export const OCCURRENCES_DATA: Occurrence[] = [
   { 
     id: 'o4', 
     territory: 'Copacabana', 
+    region: 'Região Metropolitana',
+    city: 'Rio de Janeiro',
     problem: 'Sinal de trânsito quebrado', 
     sector: 'Engenharia de Tráfego', 
     status: 'Resolvido',
@@ -88,6 +96,8 @@ export const OCCURRENCES_DATA: Occurrence[] = [
   { 
     id: 'o5', 
     territory: 'Gardênia Azul', 
+    region: 'Região Metropolitana',
+    city: 'Rio de Janeiro',
     problem: 'Falta de água recorrente', 
     sector: 'Saneamento Básico', 
     status: 'No Local',
@@ -103,6 +113,8 @@ export const OCCURRENCES_DATA: Occurrence[] = [
   { 
     id: 'o6', 
     territory: 'Rio das Pedras', 
+    region: 'Região Metropolitana',
+    city: 'Rio de Janeiro',
     problem: 'Descarte irregular de entulho em via pública', 
     sector: 'Limpeza Urbana', 
     status: 'Não Resolvido',
@@ -124,6 +136,8 @@ export const OCCURRENCES_DATA: Occurrence[] = [
   { 
     id: 'o7', 
     territory: 'Aterro do Flamengo', 
+    region: 'Região Metropolitana',
+    city: 'Rio de Janeiro',
     problem: 'Iluminação pública deficiente em área de lazer', 
     sector: 'Iluminação Pública', 
     status: 'Resolvido',
@@ -137,5 +151,133 @@ export const OCCURRENCES_DATA: Occurrence[] = [
         resolved: true,
         notes: 'Troca de reatores realizada pela equipe noturna.'
     }
+  },
+  { 
+    id: 'o8', 
+    region: 'Região Metropolitana',
+    city: 'Niterói',
+    territory: 'Icaraí', 
+    problem: 'Afundamento de via', 
+    sector: 'Conservação', 
+    status: 'Pendente',
+    details: 'Grande buraco na Rua Álvares de Azevedo, próximo à praia.',
+    reporter: { name: 'Helena Souza', phone: '(21) 92211-0099' },
+    history: [
+      { status: 'Criado', date: formatDate(new Date(now.getTime() - 5 * 60 * 60 * 1000)) }
+    ]
+  },
+  { 
+    id: 'o9', 
+    region: 'Região Metropolitana',
+    city: 'Duque de Caxias',
+    territory: 'Centro', 
+    problem: 'Vazamento de água limpa', 
+    sector: 'Saneamento Básico', 
+    status: 'Pendente',
+    assigneeId: 'user456',
+    details: 'Vazamento na calçada da Av. Presidente Vargas, desperdiçando muita água.',
+    reporter: { name: 'Igor Martins', phone: '(21) 91122-3344' },
+    history: [
+      { status: 'Criado', date: formatDate(new Date(now.getTime() - 10 * 60 * 60 * 1000)) }
+    ]
+  },
+  { 
+    id: 'o10', 
+    region: 'Região Serrana',
+    city: 'Petrópolis',
+    territory: 'Quitandinha', 
+    problem: 'Risco de deslizamento de barreira', 
+    sector: 'Defesa Civil', 
+    status: 'Pendente',
+    assigneeId: currentUser,
+    details: 'Encosta com sinais de movimentação de terra após chuvas. Moradores preocupados.',
+    reporter: { name: 'Juliana Costa', phone: '(24) 98877-1122' },
+    history: [
+      { status: 'Criado', date: formatDate(new Date(now.getTime() - 48 * 60 * 60 * 1000)) }
+    ]
+  },
+  {
+    id: 'o11',
+    region: 'Região Norte Fluminense',
+    city: 'Macaé',
+    territory: 'Praia Campista',
+    problem: 'Erosão da orla',
+    sector: 'Meio Ambiente',
+    status: 'Pendente',
+    details: 'Avanço do mar está erodindo a faixa de areia e ameaçando quiosques na orla da Praia Campista. Necessária avaliação de contenção.',
+    reporter: { name: 'Lucas Faria', phone: '(22) 99876-5432' },
+    history: [
+      { status: 'Criado', date: formatDate(new Date(now.getTime() - 36 * 60 * 60 * 1000)) }
+    ]
+  },
+  {
+    id: 'o12',
+    region: 'Região das Baixadas Litorâneas',
+    city: 'Cabo Frio',
+    territory: 'Passagem',
+    problem: 'Fiação exposta em poste',
+    sector: 'Iluminação Pública',
+    status: 'A Caminho',
+    assigneeId: 'user456',
+    details: 'Poste com fiação elétrica exposta e faíscando próximo ao canal, risco de acidente para pedestres e barcos.',
+    reporter: { name: 'Mariana Oliveira', phone: '(22) 98765-4321' },
+    history: [
+      { status: 'Criado', date: formatDate(new Date(now.getTime() - 2 * 60 * 60 * 1000)) },
+      { status: 'A Caminho', date: formatDate(new Date(now.getTime() - 5 * 60 * 1000)), notes: 'Equipe de emergência a caminho.' }
+    ]
+  },
+  {
+    id: 'o13',
+    region: 'Região da Costa Verde',
+    city: 'Angra dos Reis',
+    territory: 'Ilha Grande',
+    problem: 'Trilha bloqueada por queda de árvore',
+    sector: 'Defesa Civil',
+    status: 'Resolvido',
+    details: 'Queda de árvore de grande porte bloqueou a trilha que liga a Vila do Abraão à praia de Lopes Mendes. Equipe da Defesa Civil removeu a árvore.',
+    reporter: { name: 'Pedro Santos', phone: '(24) 97654-3210' },
+    history: [
+      { status: 'Criado', date: '28/07/2024 08:00' },
+      { status: 'No Local', date: '28/07/2024 10:00' },
+      { status: 'Resolvido', date: '28/07/2024 14:00', notes: 'Árvore cortada e removida, trilha liberada.' }
+    ],
+    report: {
+        resolved: true,
+        notes: 'Árvore cortada e removida, trilha liberada com segurança.'
+    }
+  },
+  {
+    id: 'o14',
+    region: 'Região do Médio Paraíba',
+    city: 'Volta Redonda',
+    territory: 'Aterrado',
+    problem: 'Buraco perigoso na ciclovia',
+    sector: 'Conservação',
+    status: 'No Local',
+    assigneeId: 'user123',
+    details: 'Um grande buraco se abriu na ciclovia da Av. Beira-Rio, representando um risco sério para os ciclistas. A área foi sinalizada, aguardando reparo.',
+    reporter: { name: 'Renata Gomes', phone: '(24) 96543-2109' },
+    history: [
+        { status: 'Criado', date: formatDate(new Date(now.getTime() - 6 * 60 * 60 * 1000)) },
+        { status: 'A Caminho', date: formatDate(new Date(now.getTime() - 5 * 60 * 60 * 1000)) },
+        { status: 'No Local', date: formatDate(new Date(now.getTime() - 4 * 60 * 60 * 1000)), notes: 'Área isolada com cones. Equipe de reparo acionada.' }
+    ]
+  },
+  {
+    id: 'o15',
+    region: 'Região Serrana',
+    city: 'Teresópolis',
+    territory: 'Várzea',
+    problem: 'Pessoas ilhadas por inundação',
+    sector: 'Defesa Civil',
+    status: 'Encaminhado',
+    details: 'Uma família está ilhada no segundo andar de sua casa devido à subida rápida do rio. Necessitam de resgate imediato.',
+    assigneeId: 'user123',
+    assignedAgency: 'Bombeiros',
+    reporter: { name: 'Simone Andrade', phone: '(21) 95432-1098' },
+    history: [
+      { status: 'Criado', date: formatDate(new Date(now.getTime() - 2 * 60 * 60 * 1000)) },
+      { status: 'Encaminhado', date: formatDate(new Date(now.getTime() - 1 * 60 * 60 * 1000)), notes: 'Encaminhado para equipe de resgate dos Bombeiros.' }
+    ]
   }
 ];

@@ -29,14 +29,19 @@ export interface MapPoint {
   date: string;
 }
 
+export type Agency = 'Defesa Civil' | 'Bombeiros' | 'Policia Militar' | 'SAMU' | 'Agentes Voluntários';
+
 export interface Occurrence {
   id: string;
-  territory: string;
+  territory: string; // Neighborhood or specific area
+  region: string; // New: e.g., 'Região Metropolitana'
+  city: string; // New: e.g., 'Rio de Janeiro'
   problem: string;
   sector: string;
-  status: 'Pendente' | 'A Caminho' | 'No Local' | 'Resolvido' | 'Não Resolvido';
+  status: 'Pendente' | 'Encaminhado' | 'A Caminho' | 'No Local' | 'Resolvido' | 'Não Resolvido';
   details: string;
   assigneeId?: string;
+  assignedAgency?: Agency;
   reporter: {
     name: string;
     phone: string;

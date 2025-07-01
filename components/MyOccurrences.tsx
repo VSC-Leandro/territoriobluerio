@@ -10,6 +10,7 @@ const getStatusClasses = (status: Occurrence['status'], isLarge: boolean = false
   switch (status) {
     case 'Pendente':
       return `${baseClasses} bg-brand-yellow/20 text-brand-yellow`;
+    case 'Encaminhado':
     case 'A Caminho':
     case 'No Local':
       return `${baseClasses} bg-blue-500/20 text-blue-400`;
@@ -107,7 +108,10 @@ const MyOccurrences: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const assignedOccurrences = useMemo(() => {
-    return occurrences.filter(o => o.assigneeId === currentUserId).sort((a,b) => (a.status === 'Pendente' ? -1 : 1));
+    return occurrences.filter(o => o.assigneeId === currentUserId).sort((a,b) => {
+        const statusOrder = { 'Pendente': 0, 'Encaminhado': 1, 'A Caminho': 2, 'No Local': 3, 'Resolvido': 4, 'Não Resolvido': 5 };
+        return statusOrder[a.status] - statusOrder[b.status];
+    });
   }, [occurrences]);
   
   const filteredMyOccurrences = useMemo(() => {
@@ -132,15 +136,22 @@ const MyOccurrences: React.FC = () => {
     let nextStatus: Occurrence['status'] | null = null;
     let notes: string | undefined = undefined;
 
-    if (selectedOccurrence.status === 'Pendente') {
-        nextStatus = 'A Caminho';
-        notes = 'Agente iniciou deslocamento.';
-    } else if (selectedOccurrence.status === 'A Caminho') {
-        nextStatus = 'No Local';
-        notes = 'Agente chegou ao local.';
-    } else if (selectedOccurrence.status === 'No Local') {
-        setIsReportModalOpen(true);
-        return;
+    switch (selectedOccurrence.status) {
+        case 'Pendente': // This case might be obsolete if dispatch is mandatory
+            nextStatus = 'A Caminho';
+            notes = 'Agente iniciou deslocamento.';
+            break;
+        case 'Encaminhado':
+            nextStatus = 'A Caminho';
+            notes = 'Agente confirmou o início do deslocamento.';
+            break;
+        case 'A Caminho':
+            nextStatus = 'No Local';
+            notes = 'Agente chegou ao local.';
+            break;
+        case 'No Local':
+            setIsReportModalOpen(true);
+            return;
     }
 
     if (nextStatus) {
@@ -173,6 +184,8 @@ const MyOccurrences: React.FC = () => {
     switch (status) {
       case 'Pendente':
         return { text: 'Iniciar Atendimento', disabled: false };
+       case 'Encaminhado':
+        return { text: 'Iniciar Deslocamento', disabled: false };
       case 'A Caminho':
         return { text: 'Cheguei ao Local', disabled: false };
       case 'No Local':
@@ -197,11 +210,16 @@ const MyOccurrences: React.FC = () => {
                 <div className="lg:col-span-2 space-y-6">
                     <div className="bg-brand-dark/50 p-6 rounded-lg border border-brand-green/20">
                         <h2 className="text-2xl font-bold text-brand-green mb-2">{selectedOccurrence.problem}</h2>
-                        <div className="flex items-center gap-4 mb-4">
+                        <div className="flex items-center gap-4 mb-4 flex-wrap">
                             <span className={`${getStatusClasses(selectedOccurrence.status, true)} font-bold rounded-full`}>
                                 {selectedOccurrence.status}
                             </span>
                             <span className="text-brand-light/80 font-semibold">{selectedOccurrence.sector}</span>
+                             {selectedOccurrence.assignedAgency && (
+                                <span className="text-brand-light/80 font-semibold border-l-2 border-brand-green/30 pl-4">
+                                    Agência: <span className="text-brand-light font-bold">{selectedOccurrence.assignedAgency}</span>
+                                </span>
+                            )}
                         </div>
                         <p className="text-brand-light/80"><span className="font-bold text-brand-light">Território:</span> {selectedOccurrence.territory}</p>
                         <h3 className="text-lg font-bold text-brand-light mt-4 mb-2">Descrição Detalhada</h3>
@@ -279,6 +297,7 @@ const MyOccurrences: React.FC = () => {
             >
                 <option value="Todos">Todos os Status</option>
                 <option value="Pendente">Pendente</option>
+                <option value="Encaminhado">Encaminhado</option>
                 <option value="A Caminho">A Caminho</option>
                 <option value="No Local">No Local</option>
                 <option value="Resolvido">Resolvido</option>

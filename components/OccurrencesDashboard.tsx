@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { OCCURRENCES_DATA } from '../data';
 import { Occurrence } from '../types';
+import { REGIONS_DATA } from '../regions';
 
 const KpiCard: React.FC<{ title: string; value: number; color: string }> = ({ title, value, color }) => (
   <div className="bg-brand-dark/50 p-6 rounded-lg border-l-4" style={{ borderColor: color }}>
@@ -10,40 +11,72 @@ const KpiCard: React.FC<{ title: string; value: number; color: string }> = ({ ti
 );
 
 const BarChart: React.FC<{ data: { label: string; value: number }[] }> = ({ data }) => {
-  const maxValue = useMemo(() => Math.max(...data.map(d => d.value), 0), [data]);
-  const chartHeight = 250;
-  const barWidth = 30;
-  const barMargin = 20;
-  const chartWidth = data.length * (barWidth + barMargin);
+    const maxValue = useMemo(() => Math.max(...data.map(d => d.value), 1), [data]);
+    const barHeight = 30;
+    const barMargin = 15;
+    const labelWidth = 150;
+    const valueLabelWidth = 40;
+    const chartHeight = data.length * (barHeight + barMargin);
+    const barAreaWidth = 300;
+    const chartWidth = labelWidth + barAreaWidth + valueLabelWidth;
 
-  return (
-    <div className="overflow-x-auto pb-4">
-      <svg width={chartWidth} height={chartHeight + 40} className="font-sans">
-        <g>
-          {data.map((d, i) => {
-            const barHeight = maxValue > 0 ? (d.value / maxValue) * chartHeight : 0;
-            const x = i * (barWidth + barMargin);
-            const y = chartHeight - barHeight;
-            return (
-              <g key={d.label}>
-                <rect x={x} y={y} width={barWidth} height={barHeight} fill="#39FAC9" className="transition-all" />
-                <text x={x + barWidth / 2} y={chartHeight + 20} textAnchor="middle" fill="#E0E0E0" fontSize="12">
-                  {d.label}
-                </text>
-                 <text x={x + barWidth / 2} y={y - 5} textAnchor="middle" fill="#E0E0E0" fontSize="14" fontWeight="bold">
-                  {d.value}
-                </text>
-              </g>
-            );
-          })}
-        </g>
-      </svg>
-    </div>
-  );
+    return (
+        <div className="overflow-x-auto">
+            <svg width="100%" height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="font-sans">
+                <g>
+                    {data.map((d, i) => {
+                        const barWidthValue = d.value > 0 ? (d.value / maxValue) * barAreaWidth : 0;
+                        const y = i * (barHeight + barMargin);
+
+                        return (
+                            <g key={d.label} transform={`translate(0, ${y})`}>
+                                <text
+                                    x={labelWidth - 10}
+                                    y={barHeight / 2}
+                                    textAnchor="end"
+                                    alignmentBaseline="middle"
+                                    fill="#E0E0E0"
+                                    fontSize="12"
+                                    className="font-semibold"
+                                >
+                                    {d.label}
+                                </text>
+                                <rect 
+                                    x={labelWidth} 
+                                    y={0} 
+                                    width={barWidthValue} 
+                                    height={barHeight} 
+                                    fill="#39FAC9" 
+                                    className="transition-all" 
+                                    rx="3"
+                                    ry="3"
+                                />
+                                <text
+                                    x={labelWidth + barWidthValue + 10}
+                                    y={barHeight / 2}
+                                    textAnchor="start"
+                                    alignmentBaseline="middle"
+                                    fill="#FFFFFF"
+                                    fontSize="14"
+                                    fontWeight="bold"
+                                >
+                                    {d.value}
+                                </text>
+                            </g>
+                        );
+                    })}
+                </g>
+            </svg>
+        </div>
+    );
 };
 
 const DonutChart: React.FC<{ data: { label: string; value: number; color: string }[] }> = ({ data }) => {
     const total = data.reduce((sum, d) => sum + d.value, 0);
+    if (total === 0) {
+        return <div className="flex items-center justify-center h-full text-brand-light/50">Sem dados para exibir</div>;
+    }
+    
     const radius = 80;
     const innerRadius = 50;
     const size = radius * 2;
@@ -90,28 +123,44 @@ const DonutChart: React.FC<{ data: { label: string; value: number; color: string
 const OccurrencesDashboard: React.FC = () => {
     const [statusFilter, setStatusFilter] = useState('Todos');
     const [sectorFilter, setSectorFilter] = useState('Todos');
+    const [regionFilter, setRegionFilter] = useState('Todas');
+    const [cityFilter, setCityFilter] = useState('Todas');
 
     const uniqueSectors = useMemo(() => {
         const sectors = new Set(OCCURRENCES_DATA.map(o => o.sector));
         return ['Todos', ...Array.from(sectors)];
     }, []);
+    
+    const availableCities = useMemo(() => {
+        if (regionFilter === 'Todas') {
+            return [];
+        }
+        const selectedRegion = REGIONS_DATA.find(r => r.name === regionFilter);
+        return selectedRegion ? selectedRegion.cities : [];
+    }, [regionFilter]);
+
+    useEffect(() => {
+        setCityFilter('Todas');
+    }, [regionFilter]);
 
     const filteredOccurrences = useMemo(() => {
         return OCCURRENCES_DATA.filter(o => {
-            const isInProgress = o.status === 'A Caminho' || o.status === 'No Local';
+            const isInProgress = o.status === 'A Caminho' || o.status === 'No Local' || o.status === 'Encaminhado';
             const matchesStatus = statusFilter === 'Todos' ||
                 (statusFilter === 'Em Andamento' && isInProgress) ||
                 o.status === statusFilter;
             const matchesSector = sectorFilter === 'Todos' || o.sector === sectorFilter;
-            return matchesStatus && matchesSector;
+            const matchesRegion = regionFilter === 'Todas' || o.region === regionFilter;
+            const matchesCity = cityFilter === 'Todas' || o.city === cityFilter;
+            return matchesStatus && matchesSector && matchesRegion && matchesCity;
         });
-    }, [statusFilter, sectorFilter]);
+    }, [statusFilter, sectorFilter, regionFilter, cityFilter]);
 
     const kpiData = useMemo(() => {
         return {
             total: filteredOccurrences.length,
             pending: filteredOccurrences.filter(o => o.status === 'Pendente').length,
-            inProgress: filteredOccurrences.filter(o => o.status === 'A Caminho' || o.status === 'No Local').length,
+            inProgress: filteredOccurrences.filter(o => o.status === 'A Caminho' || o.status === 'No Local' || o.status === 'Encaminhado').length,
             resolved: filteredOccurrences.filter(o => o.status === 'Resolvido').length,
             notResolved: filteredOccurrences.filter(o => o.status === 'Não Resolvido').length,
         };
@@ -122,7 +171,7 @@ const OccurrencesDashboard: React.FC = () => {
         filteredOccurrences.forEach(o => {
             counts[o.sector] = (counts[o.sector] || 0) + 1;
         });
-        return Object.entries(counts).map(([label, value]) => ({ label, value }));
+        return Object.entries(counts).map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value);
     }, [filteredOccurrences]);
 
     const statusChartData = useMemo(() => [
@@ -141,7 +190,19 @@ const OccurrencesDashboard: React.FC = () => {
                 <p className="text-brand-light/70">Visão geral e qualitativa dos chamados registrados.</p>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col md:flex-row gap-4 flex-wrap">
+                <select value={regionFilter} onChange={e => setRegionFilter(e.target.value)} className={selectStyles}>
+                    <option value="Todas">Todas as Regiões</option>
+                    {REGIONS_DATA.map(region => (
+                        <option key={region.name} value={region.name}>{region.name}</option>
+                    ))}
+                </select>
+                <select value={cityFilter} onChange={e => setCityFilter(e.target.value)} className={selectStyles} disabled={regionFilter === 'Todas'}>
+                    <option value="Todas">Todas as Cidades</option>
+                    {availableCities.map(city => (
+                        <option key={city} value={city}>{city}</option>
+                    ))}
+                </select>
                 <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className={selectStyles}>
                     <option value="Todos">Todos os Status</option>
                     <option value="Pendente">Pendente</option>
